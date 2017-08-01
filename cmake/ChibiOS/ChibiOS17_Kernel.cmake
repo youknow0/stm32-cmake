@@ -83,6 +83,23 @@ ELSEIF(STM32_FAMILY STREQUAL "F4")
     chcore_v7m.c
     chcoreasm_v7m.S
   )
+ELSEIF(STM32_FAMILY STREQUAL "F7")
+  SET(CHIBIOS_kernel_SEARCH_PATH 
+    ${CHIBIOS_kernel_SEARCH_PATH} 
+    ${CHIBIOS_ROOT}/os/common/startup/ARMCMx/devices/STM32F7xx
+    ${CHIBIOS_ROOT}/os/common/ext/CMSIS/ST/STM32F7xx
+  )
+  SET(CHIBIOS_kernel_SEARCH_HEADERS
+    ${CHIBIOS_kernel_SEARCH_HEADERS}
+    core_cm7.h
+    stm32f7xx.h
+  )
+  SET(CHIBIOS_kernel_SOURCES  
+    ${CHIBIOS_kernel_SOURCES} 
+    crt0_v7m.S 
+    chcore_v7m.c
+    chcoreasm_v7m.S
+  )
 ELSEIF(STM32_FAMILY STREQUAL "L0")
   SET(CHIBIOS_kernel_SEARCH_PATH 
     ${CHIBIOS_kernel_SEARCH_PATH} 

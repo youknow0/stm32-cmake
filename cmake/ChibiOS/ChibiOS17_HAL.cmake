@@ -196,6 +196,64 @@ ELSEIF(STM32_FAMILY STREQUAL "F4")
 
         MATH(EXPR INDEX "${INDEX} + 1")
     ENDFOREACH()
+ELSEIF(STM32_FAMILY STREQUAL "F7")
+    SET(CHIBIOS_HAL_PLATFORM_MODULES adc can dac ext gpt i2c i2s icu mac pal pwm rtc sdc serial spi st uart usb wdg quadspi)
+    SET(CHIBIOS_HAL_PLATFORM_MODULES_PATHES
+      LLD/ADCv2 
+      LLD/CANv1 
+      LLD/DACv1 
+      LLD/EXTIv1 
+      LLD/TIMv1 
+      LLD/I2Cv2 
+      LLD/SPIv2 
+      LLD/TIMv1 
+      LLD/MACv1 
+      LLD/GPIOv2 
+      LLD/TIMv1 
+      LLD/RTCv2 
+      LLD/SDMMCv1
+      LLD/USARTv2
+      LLD/SPIv1
+      LLD/TIMv1
+      LLD/USARTv2
+      LLD/USBv1
+	  LLD/xWDGv1
+	  LLD/QUADSPIv1
+    )
+
+    SET(CHIBIOS_hal_PLATFORM_SEARCH_PATH
+        ${CHIBIOS_ROOT}/os/hal/ports/common/ARMCMx
+        ${CHIBIOS_ROOT}/os/hal/ports/STM32/STM32F7xx
+        ${CHIBIOS_ROOT}/os/hal/ports/STM32/LLD/DMAv2
+    )
+    SET(CHIBIOS_hal_PLATFORM_SEARCH_HEADERS
+        hal_lld.h
+        #stm32_isr.h # TODO: not available for STM32F7xx? okay?
+        stm32_rcc.h
+        stm32_registry.h
+        nvic.h
+        stm32_dma.h
+    )
+    SET(CHIBIOS_hal_PLATFORM_SOURCES
+        hal_lld.c
+        nvic.c
+        stm32_dma.c
+    )
+    SET(INDEX 0)
+    FOREACH(module ${CHIBIOS_HAL_PLATFORM_MODULES})
+        LIST(GET CHIBIOS_HAL_PLATFORM_MODULES_PATHES ${INDEX} path)
+        SET(CHIBIOS_${module}_PLATFORM_SEARCH_PATH ${CHIBIOS_ROOT}/os/hal/ports/STM32/${path})
+        SET(CHIBIOS_${module}_PLATFORM_SEARCH_HEADERS hal_${module}_lld.h)
+        SET(CHIBIOS_${module}_PLATFORM_SOURCES hal_${module}_lld.c)
+
+        IF(${module} STREQUAL ext)
+            SET(CHIBIOS_${module}_PLATFORM_SEARCH_PATH ${CHIBIOS_ext_PLATFORM_SEARCH_PATH} ${CHIBIOS_ROOT}/os/hal/ports/STM32/STM32F7xx)
+            SET(CHIBIOS_${module}_PLATFORM_SEARCH_HEADERS ${CHIBIOS_ext_PLATFORM_SEARCH_HEADERS} hal_ext_lld_isr.h)
+            SET(CHIBIOS_${module}_PLATFORM_SOURCES ${CHIBIOS_ext_PLATFORM_SOURCES} hal_ext_lld_isr.c)
+        ENDIF()
+
+        MATH(EXPR INDEX "${INDEX} + 1")
+    ENDFOREACH()
 ELSEIF(STM32_FAMILY STREQUAL "L0")
     SET(CHIBIOS_HAL_PLATFORM_MODULES adc can dac ext gpt i2c icu pal pwm rtc serial spi st uart usb wdg)
     SET(CHIBIOS_HAL_PLATFORM_MODULES_PATHES
